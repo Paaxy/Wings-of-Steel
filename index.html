@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wings of Steel</title>
+  <!-- Link to the CSS file -->
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+</head>
+<body>
+  <!-- Main Menu -->
+  <div id="main-menu" class="menu">
+    <h1>Wings of Steel</h1>
+    <button id="btn-air-battle">Air Battle</button>
+    <button id="btn-tank-battle">Tank Battle</button>
+    <button id="btn-ship-battle">Ship Battle</button>
+  </div>
+
+  <!-- Pre-Spawn Equipment Menu -->
+  <div id="equipment-menu" class="menu hidden">
+    <h2>Equipment Setup</h2>
+    <div class="equipment-section">
+      <label for="aircraft-select">Choose Aircraft:</label>
+      <select id="aircraft-select">
+        <option value="fighter">Fighter</option>
+        <option value="bomber">Bomber</option>
+        <option value="interceptor">Interceptor</option>
+      </select>
+    </div>
+    <div class="equipment-section">
+      <label for="ammo-select">Choose Ammo Type:</label>
+      <select id="ammo-select">
+        <option value="machine-gun">Machine Gun</option>
+        <option value="rocket">Rocket</option>
+        <option value="missile">Missile</option>
+      </select>
+    </div>
+    <div class="equipment-section">
+      <label for="missile-select">Choose Missile Type:</label>
+      <select id="missile-select">
+        <option value="heat-seeking">Heat-Seeking</option>
+        <option value="radar-guided">Radar-Guided</option>
+      </select>
+    </div>
+    <button id="btn-start-game">Start Game</button>
+  </div>
+
+  <!-- Game Canvas -->
+  <div id="game-container" class="hidden">
+    <!-- Three.js will render into this canvas -->
+  </div>
+
+  <!-- Link to the main JS file -->
+  <script src="main.js"></script>
+</body>
+</html>
