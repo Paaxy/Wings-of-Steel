@@ -22,7 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
     mainMenu.classList.add("hidden");
     equipmentMenu.classList.remove("hidden");
   });
-  // You can add similar event listeners for tank and ship battles
   btnTankBattle.addEventListener("click", () => {
     selectedMode = "tank";
     mainMenu.classList.add("hidden");
@@ -49,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initGame();
   });
 
-  // --- Game Initialization using Three.js ---
+  // --- Game Initialization using Three.js and FBXLoader ---
   function initGame() {
     // Create a basic Three.js scene
     const scene = new THREE.Scene();
@@ -62,47 +61,55 @@ document.addEventListener("DOMContentLoaded", () => {
       0.1,
       1000
     );
-    camera.position.z = 5;
+    camera.position.set(0, 2, 5); // Adjust camera position as needed
 
     // Create a WebGL renderer and add it to our container
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(gameContainer.clientWidth, gameContainer.clientHeight);
     gameContainer.appendChild(renderer.domElement);
 
-    // Add a basic object to represent our aircraft (placeholder)
-    const geometry = new THREE.BoxGeometry();
-    const material = new THREE.MeshBasicMaterial({ color: 0x0077ff });
-    const aircraft = new THREE.Mesh(geometry, material);
-    scene.add(aircraft);
+    // Add ambient and directional lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+    
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(5, 10, 7.5);
+    scene.add(directionalLight);
 
-    // Example: Mach speed calculation (assuming speed in m/s)
-    const speedOfSound = 343; // m/s at sea level
-    let aircraftSpeed = 0; // starting speed (m/s)
-    
-    // Function to update aircraft speed (you can tie this to user input)
-    function updateAircraftSpeed(deltaSpeed) {
-      aircraftSpeed += deltaSpeed;
-      const machNumber = aircraftSpeed / speedOfSound;
-      console.log("Current Speed (m/s):", aircraftSpeed, "Mach:", machNumber.toFixed(2));
-      // Here you can add effects based on Mach number, e.g., sonic boom at Mach > 1
-    }
-    
-    // Dummy update call (for testing speed changes)
-    updateAircraftSpeed(100); // Increase speed by 100 m/s
+    // Load the FBX model using FBXLoader
+    const fbxLoader = new THREE.FBXLoader();
+    fbxLoader.load(
+      'assets/models/your_model.fbx', // Change this to your model's path
+      (object) => {
+        // Adjust the model's scale and position if needed
+        object.scale.set(0.01, 0.01, 0.01); // Example scale adjustment
+        object.position.set(0, 0, 0);
+        scene.add(object);
+      },
+      (xhr) => {
+        console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
+      },
+      (error) => {
+        console.error('An error occurred while loading the FBX model:', error);
+      }
+    );
+
+    // Optional: Add OrbitControls for camera navigation (requires additional script)
+    // Uncomment the following lines if you want to use OrbitControls:
+    /*
+    import { OrbitControls } from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/examples/jsm/controls/OrbitControls.js';
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.update();
+    */
 
     // Render loop
     function animate() {
       requestAnimationFrame(animate);
 
-      // Example movement: rotate the aircraft for demonstration
-      aircraft.rotation.x += 0.01;
-      aircraft.rotation.y += 0.01;
+      // You can add any custom animations or game logic here
 
       renderer.render(scene, camera);
     }
     animate();
-    
-    // Further code for handling player input, spawning projectiles,
-    // and adding more game mechanics would be implemented here.
   }
 });
