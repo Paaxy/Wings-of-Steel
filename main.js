@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const mainMenu = document.getElementById("main-menu");
   const equipmentMenu = document.getElementById("equipment-menu");
   const gameContainer = document.getElementById("game-container");
+  const loadingDiv = document.getElementById("loading");
 
   const btnAirBattle = document.getElementById("btn-air-battle");
   const btnTankBattle = document.getElementById("btn-tank-battle");
@@ -43,7 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Hide the equipment menu and show the game container
     equipmentMenu.classList.add("hidden");
     gameContainer.classList.remove("hidden");
-    
+    loadingDiv.classList.remove('hidden'); // Show loading
+
     // Initialize the game based on selected mode
     initGame();
   });
@@ -78,36 +80,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Load the FBX model using FBXLoader
     const fbxLoader = new THREE.FBXLoader();
+    let modelPath = '';
+
+    if (selectedMode === "air") {
+      modelPath = 'assets/models/aircraft_model.fbx'; // Change this to your aircraft model's path
+    } else if (selectedMode === "tank") {
+      modelPath = 'assets/models/tank_model.fbx'; // Change this to your tank model's path
+    } else if (selectedMode === "ship") {
+      modelPath = 'assets/models/ship_model.fbx'; // Change this to your ship model's path
+    }
+
     fbxLoader.load(
-      'assets/models/your_model.fbx', // Change this to your model's path
+      modelPath,
       (object) => {
-        // Adjust the model's scale and position if needed
+        loadingDiv.classList.add('hidden'); // Hide loading
         object.scale.set(0.01, 0.01, 0.01); // Example scale adjustment
-        object.position.set(0, 0, 0);
         scene.add(object);
       },
       (xhr) => {
         console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
       },
       (error) => {
+        loadingDiv.classList.add('hidden'); // Hide loading
         console.error('An error occurred while loading the FBX model:', error);
       }
     );
 
-    // Optional: Add OrbitControls for camera navigation (requires additional script)
-    // Uncomment the following lines if you want to use OrbitControls:
-    /*
-    import { OrbitControls } from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/examples/jsm/controls/OrbitControls.js';
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.update();
-    */
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      camera.aspect = gameContainer.clientWidth / gameContainer.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(gameContainer.clientWidth, gameContainer.clientHeight);
+    });
+
+    // Optional: Add OrbitControls for camera navigation
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
 
     // Render loop
     function animate() {
       requestAnimationFrame(animate);
-
-      // You can add any custom animations or game logic here
-
+      controls.update(); // Update controls
       renderer.render(scene, camera);
     }
     animate();
